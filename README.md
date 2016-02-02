@@ -112,4 +112,4 @@ Some good tips for improvement here,
 [Writing Vim Plugins in Python](http://www.terminally-incoherent.com/blog/2013/05/06/vriting-vim-plugins-in-python/)
 especially the bit about failing silently when vim doesn't have Python support.
 
-
+The contents of the `test` folder has to be revised

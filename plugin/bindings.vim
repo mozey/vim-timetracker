@@ -28,3 +28,8 @@ nmap <C-t>a :call TTAll()<CR>
 " One =
 nmap <C-h>1 :call HOne()<Esc>
 imap <C-h>1 <C-o>:call HOne()<CR>
+
+" Two -
+nmap <C-h>2 :call HTwo()<Esc>
+imap <C-h>2 <C-o>:call HTwo()<CR>
+
