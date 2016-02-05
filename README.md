@@ -3,6 +3,14 @@
 Vim plugin written in python for flat-file todo list time sheets
 
 
+## Disclaimer
+
+It's likely that no-one besides myself will find this useful for time tracking, 
+just uploaded it to github for backup and in an attempt to document my workflow.
+
+Might be useful as an example of creating vim plugins with python.
+
+
 ## Installation
 
 Vim must be compiled with 
@@ -49,12 +57,6 @@ Manual testing
     
     cp ./plugin/timetracker.vim ~/.vim/plugged/vim-timetracker/plugin/timetracker.vim
     
-
-## Disclaimer
-
-It's very likely that no-one besides myself will find this useful, just uploaded 
-it to github for backup and in an attempt to document my workflow for myself.
-
 
 ## Why?
 
@@ -136,8 +138,7 @@ The content of `2016-01 todo.txt` might look like this
         12:00 - 13:00 -> 01:00
         => 01:55
     
-    My Other Project
-    ----------------
+    ## My Other Project
     
     = Task 1
     

@@ -7,7 +7,7 @@ import re
 
 build_path = os.path.join(
     os.path.realpath(
-            os.path.join(os.getcwd(), os.path.dirname(__file__))
+        os.path.join(os.getcwd(), os.path.dirname(__file__))
     ),
     "plugin",
     "timetracker.vim"
