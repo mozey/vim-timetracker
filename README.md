@@ -27,6 +27,8 @@ TODO :PlugUpdate doesn't seem to work? To update:
  
     rm -rf ~/.vim/plugged/vim-timetracker
     
+    vim 
+    
     :PlugInstall
 
 

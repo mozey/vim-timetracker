@@ -29,10 +29,7 @@ def add_functions():
         if func_name[0] is not "_":
             func = getattr(timetracker, func_name)
             body, _ = inspect.getsourcelines(func)
-            body[0] = body[0].replace(
-                    func_name, func_name.capitalize()
-            )
-            write_func(func_name, body[1:])
+            write_func(func_name.capitalize(), body[1:])
             print(func_name + "...")
 
 
