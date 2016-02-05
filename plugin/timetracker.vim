@@ -152,10 +152,6 @@ import math
 import re
 import vim
 
-def get_tab():
-    # 4 spaces
-    return "    "
-
 def get_totals(a_rows):
     a_totals = []
     for n in range(0, len(a_rows)):
@@ -200,15 +196,7 @@ for l in range(cl - 1, 0, -1):
         else:
             rows_to_sum.append(b[l])
 
-line = "==> " + sum_totals(rows_to_sum)
-
-# Insert tab at beginning of line of there is none
-tab = get_tab()
-regex = re.compile("^" + tab)
-if not re.match(regex, line):
-    line = tab + line
-
-b[cl - 1] = line
+b[cl - 1] = "==> " + sum_totals(rows_to_sum)
 
 EOF
 endfunction
