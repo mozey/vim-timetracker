@@ -9,7 +9,7 @@ timetracker.tt_h_one()
 assert vim.current.line == "# foo"
 
 timetracker.tt_h_two()
-assert vim.current.line == "## # foo"
+assert vim.current.line == "## foo"
 
 
 

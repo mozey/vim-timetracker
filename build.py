@@ -3,6 +3,7 @@
 from vim_timetracker import timetracker
 import inspect
 import os
+import re
 
 build_path = os.path.join(
     os.path.realpath(
@@ -15,7 +16,7 @@ build_path = os.path.join(
 
 def write_func(func_name, body):
     f.write("function! ")
-    f.write(func_name + "\n")
+    f.write(func_name + "()\n")
     f.write("python <<EOF\n\n")
 
     f.writelines(body)
@@ -29,6 +30,12 @@ def add_functions():
         if func_name[0] is not "_":
             func = getattr(timetracker, func_name)
             body, _ = inspect.getsourcelines(func)
+
+            for i in range(len(body)):
+                # Remove first level of indentation,
+                # assumes four spaces for each level.
+                body[i] = re.sub(r"^\s{4}", "", body[i])
+
             write_func(func_name.capitalize(), body[1:])
             print(func_name + "...")
 

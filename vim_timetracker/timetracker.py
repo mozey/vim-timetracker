@@ -7,6 +7,8 @@ def tt_h_one():
     Prepend current line with header 1
     """
     import vim
+    import re
+    vim.current.line = re.sub(r"^#*\s*", "", vim.current.line)
     vim.current.line = "# " + vim.current.line
 
 
@@ -15,6 +17,8 @@ def tt_h_two():
     Prepend current line with header 2
     """
     import vim
+    import re
+    vim.current.line = re.sub(r"^#*\s*", "", vim.current.line)
     vim.current.line = "## " + vim.current.line
 
 
@@ -22,6 +26,10 @@ def tt_row():
     from datetime import datetime
     import re
     import vim
+
+    def get_tab():
+        # 4 spaces
+        return "    "
 
     def get_date_time(s_time):
         a_time = s_time.split(":")
@@ -57,7 +65,7 @@ def tt_row():
             " -> " + s_hours + ":" + s_minutes
 
     window = vim.current.window
-    vim.current.line = time_elapsed(vim.current.line)
+    vim.current.line = get_tab() + time_elapsed(vim.current.line)
     l, c = window.cursor
     window.cursor = (l, 23)
 
@@ -66,6 +74,11 @@ def tt_time():
     from datetime import datetime
     import math
     import vim
+    import re
+
+    def get_tab():
+        # 4 spaces
+        return "    "
 
     def get_time():
         now = datetime.today()
@@ -105,6 +118,13 @@ def tt_time():
     line = vim.current.line
     i = c + 1
     vim.current.line = line[:i] + get_time() + line[i:]
+
+    # Insert tab at beginning of line of there is none
+    tab = get_tab()
+    regex = re.compile("^" + tab)
+    if not re.match(regex, vim.current.line):
+        vim.current.line = tab + vim.current.line
+
     window.cursor = (l, c + 5)
 
 
@@ -112,6 +132,10 @@ def tt_block():
     import math
     import re
     import vim
+
+    def get_tab():
+        # 4 spaces
+        return "    "
 
     def get_totals(a_rows):
         a_totals = []
@@ -150,19 +174,31 @@ def tt_block():
     rows_to_sum = []
     for l in range(cl - 1, 0, -1):
         if len(b[l]) > 0:
-            if b[l][0] == "*":
+            if b[l][0] == "=":
                 # task = b[l]
                 break
             else:
                 rows_to_sum.append(b[l])
 
-    b[cl - 1] = "=> " + sum_totals(rows_to_sum)
+    line = "=> " + sum_totals(rows_to_sum)
+
+    # Insert tab at beginning of line of there is none
+    tab = get_tab()
+    regex = re.compile("^" + tab)
+    if not re.match(regex, line):
+        line = tab + line
+
+    b[cl - 1] = line
 
 
 def tt_sum():
     import math
     import re
     import vim
+
+    def get_tab():
+        # 4 spaces
+        return "    "
 
     def get_totals(a_rows):
         a_totals = []
@@ -208,53 +244,73 @@ def tt_sum():
             else:
                 rows_to_sum.append(b[l])
 
-    b[cl - 1] = "==> " + sum_totals(rows_to_sum)
+    line = "==> " + sum_totals(rows_to_sum)
 
+    # Insert tab at beginning of line of there is none
+    tab = get_tab()
+    regex = re.compile("^" + tab)
+    if not re.match(regex, line):
+        line = tab + line
 
-def tt_all():
-    import math
-    import re
-    import vim
+    b[cl - 1] = line
 
-    def get_totals(a_rows):
-        a_totals = []
-        for n in range(0, len(a_rows)):
-            a_rows[n] = re.sub(r"\s+", "", a_rows[n])
-            a_total = a_rows[n].split("==>")
-            if len(a_total) > 1:
-                a_totals.append(a_total[1])
-        return a_totals
-
-    def sum_totals(s):
-        a_totals = get_totals(s)
-        n_hours = 0
-        n_minutes = 0
-        for n in range(0, len(a_totals)):
-            n_hours += int(math.floor(float(a_totals[n][:2])))
-            n_minutes += int(math.floor(float(a_totals[n][3:5])))
-        if n_minutes >= 60:
-            n_hours += int(math.floor(n_minutes / 60))
-            n_minutes %= 60
-
-        if n_hours < 10:
-            s_hours = "0" + str(n_hours)
-        else:
-            s_hours = str(n_hours)
-        if n_minutes < 10:
-            s_minutes = "0" + str(n_minutes)
-        else:
-            s_minutes = str(n_minutes)
-
-        return s_hours + ":" + s_minutes
-
-    window = vim.current.window
-    b = vim.current.buffer
-    cl, cc = window.cursor
-
-    rows_to_sum = []
-    for l in range(cl - 1, 0, -1):
-        if len(b[l]) > 0:
-            if b[l][0:3] == "==>":
-                rows_to_sum.append(b[l])
-
-    b[cl - 1] = "===> " + sum_totals(rows_to_sum)
+#
+# def tt_all():
+#     import math
+#     import re
+#     import vim
+#
+#     def get_tab():
+#         # 4 spaces
+#         return "    "
+#
+#     def get_totals(a_rows):
+#         a_totals = []
+#         for n in range(0, len(a_rows)):
+#             a_rows[n] = re.sub(r"\s+", "", a_rows[n])
+#             a_total = a_rows[n].split("==>")
+#             if len(a_total) > 1:
+#                 a_totals.append(a_total[1])
+#         return a_totals
+#
+#     def sum_totals(s):
+#         a_totals = get_totals(s)
+#         n_hours = 0
+#         n_minutes = 0
+#         for n in range(0, len(a_totals)):
+#             n_hours += int(math.floor(float(a_totals[n][:2])))
+#             n_minutes += int(math.floor(float(a_totals[n][3:5])))
+#         if n_minutes >= 60:
+#             n_hours += int(math.floor(n_minutes / 60))
+#             n_minutes %= 60
+#
+#         if n_hours < 10:
+#             s_hours = "0" + str(n_hours)
+#         else:
+#             s_hours = str(n_hours)
+#         if n_minutes < 10:
+#             s_minutes = "0" + str(n_minutes)
+#         else:
+#             s_minutes = str(n_minutes)
+#
+#         return s_hours + ":" + s_minutes
+#
+#     window = vim.current.window
+#     b = vim.current.buffer
+#     cl, cc = window.cursor
+#
+#     rows_to_sum = []
+#     for l in range(cl - 1, 0, -1):
+#         if len(b[l]) > 0:
+#             if b[l][0:3] == "==>":
+#                 rows_to_sum.append(b[l])
+#
+#     line = "===> " + sum_totals(rows_to_sum)
+#
+#     # Insert tab at beginning of line of there is none
+#     tab = get_tab()
+#     regex = re.compile("^" + tab)
+#     if not re.match(regex, line):
+#         line = tab + line
+#
+#     b[cl - 1] = line

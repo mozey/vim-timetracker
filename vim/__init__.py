@@ -1,3 +1,10 @@
+command_result = ""
+
+
+def command():
+    return command_result
+
+
 class Buffer:
     buf = {}
 

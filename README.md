@@ -39,6 +39,17 @@ As per the [official docs](http://vimdoc.sourceforge.net/htmldoc/if_pyth.html)
 Use `:pyfile myscript.py`
 
 
+## Testing
+
+TODO `test.py`
+
+Manual testing
+
+    cp ./plugin/bindings.vim ~/.vim/plugged/vim-timetracker/plugin/bindings.vim
+    
+    cp ./plugin/timetracker.vim ~/.vim/plugged/vim-timetracker/plugin/timetracker.vim
+    
+
 ## Disclaimer
 
 It's very likely that no-one besides myself will find this useful, just uploaded 
@@ -66,11 +77,9 @@ maintain the todo text files, this repos is a combination of these two plugins:
 
 Make two different kinds of headers
 
-    First kind
-    ==========
+    # First kind
     
-    Second kind
-    -----------
+    ## Second kind
 
 ### timetracker.vim
 
@@ -99,26 +108,27 @@ Sum time diffs for the entire day
 
 The content of `2016-01 todo.txt` might look like this
     
-    2016-02-02
-    ==========
+    # 2016-02-02
     
-    My Project
-    ----------
+    ## My Project
     
     * Task 1
     * Sub task of task 1
     * Random note
+    
     09:00 - 09:25 -> 00:25
     10:00 - 10:15 -> 00:15
     11:10 - 12:00 -> 00:50
     => 01:30
     
     * Task 2
+    
     09:25 - 10:00 -> 00:35
     => 00:35
     
     * Task 3
     * Sub task of task 3
+    
     10:15 - 11:10 -> 00:55
     12:00 - 13:00 -> 01:00
     => 01:55
@@ -127,6 +137,7 @@ The content of `2016-01 todo.txt` might look like this
     ----------------
     
     * Task 1
+    
     14:00 - 17:00 -> 03:00
     => 03:00
     
