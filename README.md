@@ -2,7 +2,11 @@
 
 Vim plugin written in python for flat-file todo list time sheets
 
+
 ## Installation
+
+Vim must be compiled with 
+[python support](http://stackoverflow.com/questions/13477264/import-vim-in-python-gives-back-errors)
 
 Requires [vim-plug](https://github.com/junegunn/vim-plug)
 
@@ -11,13 +15,33 @@ Requires [vim-plug](https://github.com/junegunn/vim-plug)
     
 Add timetracker to ~/.vimrc
  
-    TODO...
+    call plug#begin()
+    Plug 'mozey/vim-timetracker'
+    call plug#end()
     
+And install with plug
+
+    :PlugInstall
+    
+TODO :PlugUpdate doesn't seem to work? To update:
+ 
+    rm -rf ~/.vim/plugged/vim-timetracker
+    
+    :PlugInstall
+
+
+## Debugging
+
+As per the [official docs](http://vimdoc.sourceforge.net/htmldoc/if_pyth.html)
+
+Use `:pyfile myscript.py`
+
 
 ## Disclaimer
 
 It's very likely that no-one besides myself will find this useful, just uploaded 
 it to github for backup and in an attempt to document my workflow for myself.
+
 
 ## Why?
 
@@ -34,6 +58,7 @@ file, even though it's somewhat clunky.
 
 A couple of years ago I wrote __two vim plugins__ in python that helps me 
 maintain the todo text files, this repos is a combination of these two plugins:
+
 
 ### header.vim
 
@@ -111,5 +136,7 @@ The content of `2016-01 todo.txt` might look like this
 Some good tips for improvement here,
 [Writing Vim Plugins in Python](http://www.terminally-incoherent.com/blog/2013/05/06/vriting-vim-plugins-in-python/)
 especially the bit about failing silently when vim doesn't have Python support.
+
+More documentation here [Scripting Vim with Python](http://orestis.gr/blog/2008/08/10/scripting-vim-with-python/)
 
 The contents of the `test` folder has to be revised

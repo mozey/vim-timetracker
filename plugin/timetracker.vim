@@ -1,345 +1,286 @@
-" =============================================================================
-" Functions
-
-function! HOne()
+function! tt_all
 python <<EOF
 
-import vim
+    import math
+    import re
+    import vim
 
-def fRepeat(s, n):
-    r = ""
-    for i in range(0, n):
-      r += s
-    return r
+    def get_totals(a_rows):
+        a_totals = []
+        for n in range(0, len(a_rows)):
+            a_rows[n] = re.sub(r"\s+", "", a_rows[n])
+            a_total = a_rows[n].split("==>")
+            if len(a_total) > 1:
+                a_totals.append(a_total[1])
+        return a_totals
 
-window = vim.current.window
-b = vim.current.buffer
-cl, cc = window.cursor
+    def sum_totals(s):
+        a_totals = get_totals(s)
+        n_hours = 0
+        n_minutes = 0
+        for n in range(0, len(a_totals)):
+            n_hours += int(math.floor(float(a_totals[n][:2])))
+            n_minutes += int(math.floor(float(a_totals[n][3:5])))
+        if n_minutes >= 60:
+            n_hours += int(math.floor(n_minutes / 60))
+            n_minutes %= 60
 
-line = vim.current.line
-length = len(line)
-if length < 4: length = 4
-header = fRepeat("=", length)
-b.append(header, cl)
+        if n_hours < 10:
+            s_hours = "0" + str(n_hours)
+        else:
+            s_hours = str(n_hours)
+        if n_minutes < 10:
+            s_minutes = "0" + str(n_minutes)
+        else:
+            s_minutes = str(n_minutes)
+
+        return s_hours + ":" + s_minutes
+
+    window = vim.current.window
+    b = vim.current.buffer
+    cl, cc = window.cursor
+
+    rows_to_sum = []
+    for l in range(cl - 1, 0, -1):
+        if len(b[l]) > 0:
+            if b[l][0:3] == "==>":
+                rows_to_sum.append(b[l])
+
+    b[cl - 1] = "===> " + sum_totals(rows_to_sum)
 
 EOF
 endfunction
 
-function! HTwo()
+function! tt_block
 python <<EOF
 
-import vim
+    import math
+    import re
+    import vim
 
-def fRepeat(s, n):
-    r = ""
-    for i in range(0, n):
-      r += s
-    return r
+    def get_totals(a_rows):
+        a_totals = []
+        for n in range(0, len(a_rows)):
+            a_rows[n] = re.sub(r"\s+", "", a_rows[n])
+            s_total = a_rows[n].split("->")[1]
+            a_totals.append(s_total)
+        return a_totals
 
-window = vim.current.window
-b = vim.current.buffer
-cl, cc = window.cursor
+    def sum_totals(a_rows):
+        a_totals = get_totals(a_rows)
+        n_hours = 0
+        n_minutes = 0
+        for n in range(0, len(a_totals)):
+            n_hours += int(math.floor((float(a_totals[n][:2]))))
+            n_minutes += int(math.floor((float(a_totals[n][3:5]))))
+        if n_minutes >= 60:
+            n_hours += int(math.floor((n_minutes / 60)))
+            n_minutes %= 60
+            
+        if n_hours < 10:
+            s_hours = "0" + str(n_hours)
+        else:
+            s_hours = str(n_hours)
+            
+        if n_minutes < 10:
+            s_minutes = "0" + str(n_minutes)
+        else:
+            s_minutes = str(n_minutes)
+        return s_hours + ":" + s_minutes
 
-line = vim.current.line
-length = len(line)
-if length < 4: length = 4
-header = fRepeat("-", length)
-b.append(header, cl)
+    window = vim.current.window
+    b = vim.current.buffer
+    cl, cc = window.cursor
+
+    rows_to_sum = []
+    for l in range(cl - 1, 0, -1):
+        if len(b[l]) > 0:
+            if b[l][0] == "*":
+                # task = b[l]
+                break
+            else:
+                rows_to_sum.append(b[l])
+
+    b[cl - 1] = "=> " + sum_totals(rows_to_sum)
 
 EOF
 endfunction
 
-function TTest()
+function! tt_h_one
 python <<EOF
 
-import vim
-
-window = vim.current.window
-b = vim.current.buffer
-cl, cc = window.cursor
-
-rows = []
-for l in range(cl - 1, 0, -1):
-  if len(b[l]) > 0:
-    rows.append(b[l])
-    if b[l][0:1] == "->":
-      task = b[l]
-      break
-
-print rows
-print task
+    """
+    Prepend current line with header 1
+    """
+    import vim
+    vim.current.line = "# " + vim.current.line
 
 EOF
 endfunction
 
-
-function TTRow()
+function! tt_h_two
 python <<EOF
 
-from datetime import datetime
-import re
-import vim
-
-def fGetDateTime(sTime):
-  aTime = sTime.split(":")
-  aTime[0] = int(aTime[0])
-  aTime[1] = int(aTime[1])
-  Today = datetime.today();
-  DateTime = datetime(Today.year, Today.month, Today.day, aTime[0], aTime[1])
-  return DateTime
-
-def fTimeElapsed(s):
-  s = re.sub(r"\s+", "",  s)
-  aTime = s.split("-")
-  t1 = fGetDateTime(aTime[0])
-  t2 = fGetDateTime(aTime[1])
-  d = t2 - t1
-
-  nHours = d.seconds / (60 * 60)
-  nMinutes = (d.seconds % (60 * 60)) / 60
-
-  if (nHours < 10):
-    sHours = "0" + str(nHours)
-  else:
-    sHours = str(nHours)
-
-  if (nMinutes < 10):
-    sMinutes = "0" + str(nMinutes)
-  else:
-    sMinutes = str(nMinutes)
-
-  return aTime[0] + " - " + aTime[1] + " -> " + sHours + ":" + sMinutes;
-
-window = vim.current.window
-vim.current.line = fTimeElapsed(vim.current.line);
-l, c = window.cursor
-window.cursor = (l, 23)
+    """
+    Prepend current line with header 2
+    """
+    import vim
+    vim.current.line = "## " + vim.current.line
 
 EOF
 endfunction
 
-function TTTime()
+function! tt_row
 python <<EOF
 
-from datetime import datetime
-import math
-import vim
+    from datetime import datetime
+    import re
+    import vim
 
-def fGetTime():
-  Now = datetime.today()
-  sHours = str(Now.hour)
-  sMinutes = str(Now.minute)
+    def get_date_time(s_time):
+        a_time = s_time.split(":")
+        a_time[0] = int(a_time[0])
+        a_time[1] = int(a_time[1])
+        today = datetime.today()
+        date_time = datetime(
+            today.year, today.month, today.day, a_time[0], a_time[1]
+        )
+        return date_time
 
-  if (len(sHours) == 1):
-    sHours = "0" + str(sHours)
+    def time_elapsed(s):
+        s = re.sub(r"\s+", "", s)
+        a_time = s.split("-")
+        t1 = get_date_time(a_time[0])
+        t2 = get_date_time(a_time[1])
+        d = t2 - t1
 
-  if (len(sMinutes) == 1):
-    sMinutes = "0" + str(sMinutes)
+        n_hours = d.seconds / (60 * 60)
+        n_minutes = (d.seconds % (60 * 60)) / 60
 
-  sMinDigit1 = sMinutes[0]
-  sMinDigit2 = sMinutes[1]
-  sMinDigit2 = str(int(math.floor((round(float(sMinDigit2) / 5) * 5))));
+        if n_hours < 10:
+            s_hours = "0" + str(n_hours)
+        else:
+            s_hours = str(n_hours)
 
-  if (sMinDigit2 == "10"):
-    if (sMinDigit1 == "5"):
-      if (sHours == "23"):
-        sHours = "00"
-        sMinutes = "00"
-      else:
-        sHours = str(int(sHours) + 1)
-        sMinutes = "00"
-    else:
-      sMinDigit1 = str(int(sMinDigit1) + 1)
-      sMinutes = sMinDigit1 + "0"
-  else:
-    sMinutes = sMinDigit1 + sMinDigit2
+        if n_minutes < 10:
+            s_minutes = "0" + str(n_minutes)
+        else:
+            s_minutes = str(n_minutes)
 
-  return sHours + ":" + sMinutes;
+        return a_time[0] + " - " + a_time[1] + \
+            " -> " + s_hours + ":" + s_minutes
 
-window = vim.current.window
-l, c = window.cursor
-line = vim.current.line
-i = c + 1
-vim.current.line = line[:i] + fGetTime() + line[i:]
-window.cursor = (l, c + 5)
+    window = vim.current.window
+    vim.current.line = time_elapsed(vim.current.line)
+    l, c = window.cursor
+    window.cursor = (l, 23)
 
 EOF
 endfunction
 
-function TTBlock()
+function! tt_sum
 python <<EOF
 
-from datetime import datetime
-import math
-import re
-import vim
+    import math
+    import re
+    import vim
 
-def fGetTotals(aRows):
-  aTotals = []
-  for n in range(0, len(aRows)):
-    aRows[n] = re.sub(r"\s+", "", aRows[n])
-    sTotal = aRows[n].split("->")[1]
-    aTotals.append(sTotal)
-  return aTotals
+    def get_totals(a_rows):
+        a_totals = []
+        for n in range(0, len(a_rows)):
+            a_rows[n] = re.sub(r"\s+", "", a_rows[n])
+            a_total = a_rows[n].split("->")
+            if len(a_total) > 1:
+                a_totals.append(a_total[1])
+        return a_totals
 
-def fSumTotals(aRows):
-  aTotals = fGetTotals(aRows)
-  nHours = 0
-  nMinutes = 0
-  for n in range(0, len(aTotals)):
-    nHours += int(math.floor((float(aTotals[n][:2]))))
-    nMinutes += int(math.floor((float(aTotals[n][3:5]))))
-  if (nMinutes >= 60):
-    nHours += int(math.floor((nMinutes / 60)))
-    nMinutes = nMinutes % 60
-  if (nHours < 10):
-    sHours = "0" + str(nHours)
-  else:
-    sHours = str(nHours)
-  if (nMinutes < 10):
-    sMinutes = "0" + str(nMinutes)
-  else:
-    sMinutes = str(nMinutes)
-  return sHours + ":" + sMinutes
+    def sum_totals(s):
+        a_totals = get_totals(s)
+        n_hours = 0
+        n_minutes = 0
+        for n in range(0, len(a_totals)):
+            n_hours += int(math.floor(float(a_totals[n][:2])))
+            n_minutes += int(math.floor(float(a_totals[n][3:5])))
+        if n_minutes >= 60:
+            n_hours += int(math.floor(n_minutes / 60))
+            n_minutes %= 60
 
-window = vim.current.window
-b = vim.current.buffer
-cl, cc = window.cursor
+        if n_hours < 10:
+            s_hours = "0" + str(n_hours)
+        else:
+            s_hours = str(n_hours)
+        if n_minutes < 10:
+            s_minutes = "0" + str(n_minutes)
+        else:
+            s_minutes = str(n_minutes)
 
-aRows = []
-for l in range(cl - 1, 0, -1):
-  if len(b[l]) > 0:
-    if b[l][0] == "*":
-      task = b[l]
-      break
-    else:
-      aRows.append(b[l])
+        return s_hours + ":" + s_minutes
 
-b[cl - 1] = "=> " + fSumTotals(aRows)
+    window = vim.current.window
+    b = vim.current.buffer
+    cl, cc = window.cursor
+
+    rows_to_sum = []
+    for l in range(cl - 1, 0, -1):
+        if len(b[l]) > 0:
+            if b[l][0:4] == "====":
+                # header = b[l - 1]
+                break
+            else:
+                rows_to_sum.append(b[l])
+
+    b[cl - 1] = "==> " + sum_totals(rows_to_sum)
 
 EOF
 endfunction
 
-
-function TTSum()
+function! tt_time
 python <<EOF
 
-from datetime import datetime
-import math
-import re
-import vim
+    from datetime import datetime
+    import math
+    import vim
 
-def fGetTotals(aRows):
-  aTotals = []
-  for n in range(0, len(aRows)):
-    aRows[n] = re.sub(r"\s+", "", aRows[n])
-    aTotal = aRows[n].split("->")
-    if len(aTotal) > 1:
-      aTotals.append(aTotal[1])
-  return aTotals
+    def get_time():
+        now = datetime.today()
+        s_hours = str(now.hour)
+        s_minutes = str(now.minute)
 
-def fSumTotals(s):
-  aTotals = fGetTotals(s)
-  nHours = 0
-  nMinutes = 0
-  for n in range(0, len(aTotals)):
-    nHours += int(math.floor(float(aTotals[n][:2])))
-    nMinutes += int(math.floor(float(aTotals[n][3:5])))
-  if nMinutes >= 60:
-    nHours += int(math.floor(nMinutes / 60))
-    nMinutes = nMinutes % 60
-  if nHours < 10:
-    sHours = "0" + str(nHours)
-  else:
-    sHours = str(nHours)
-  if nMinutes < 10:
-    sMinutes = "0" + str(nMinutes)
-  else:
-    sMinutes = str(nMinutes)
-  return sHours + ":" + sMinutes
+        if len(s_hours) == 1:
+            s_hours = "0" + str(s_hours)
 
-window = vim.current.window
-b = vim.current.buffer
-cl, cc = window.cursor
+        if len(s_minutes) == 1:
+            s_minutes = "0" + str(s_minutes)
 
-aRows = []
-for l in range(cl - 1, 0, -1):
-  if len(b[l]) > 0:
-    if b[l][0:4] == "====":
-      header = b[l - 1]
-      break
-    else:
-      aRows.append(b[l])
+        s_min_digit_1 = s_minutes[0]
+        s_min_digit_2 = s_minutes[1]
+        s_min_digit_2 = str(
+                int(math.floor((round(float(s_min_digit_2) / 5) * 5)))
+        )
 
-b[cl - 1] = "==> " + fSumTotals(aRows)
+        if s_min_digit_2 == "10":
+            if s_min_digit_1 == "5":
+                if s_hours == "23":
+                    s_hours = "00"
+                    s_minutes = "00"
+                else:
+                    s_hours = str(int(s_hours) + 1)
+                    s_minutes = "00"
+            else:
+                s_min_digit_1 = str(int(s_min_digit_1) + 1)
+                s_minutes = s_min_digit_1 + "0"
+        else:
+            s_minutes = s_min_digit_1 + s_min_digit_2
+
+        return s_hours + ":" + s_minutes
+
+    window = vim.current.window
+    l, c = window.cursor
+    line = vim.current.line
+    i = c + 1
+    vim.current.line = line[:i] + get_time() + line[i:]
+    window.cursor = (l, c + 5)
 
 EOF
 endfunction
-
-function TTAll()
-python <<EOF
-
-from datetime import datetime
-import math
-import re
-import vim
-
-def fGetTotals(aRows):
-    aTotals = []
-    for n in range(0, len(aRows)):
-        aRows[n] = re.sub(r"\s+", "", aRows[n])
-        aTotal = aRows[n].split("==>")
-        if len(aTotal) > 1:
-            aTotals.append(aTotal[1])
-    return aTotals
-
-def fSumTotals(s):
-  aTotals = fGetTotals(s)
-  nHours = 0
-  nMinutes = 0
-  for n in range(0, len(aTotals)):
-    nHours += int(math.floor(float(aTotals[n][:2])))
-    nMinutes += int(math.floor(float(aTotals[n][3:5])))
-  if nMinutes >= 60:
-    nHours += int(math.floor(nMinutes / 60))
-    nMinutes = nMinutes % 60
-  if nHours < 10:
-    sHours = "0" + str(nHours)
-  else:
-    sHours = str(nHours)
-  if nMinutes < 10:
-    sMinutes = "0" + str(nMinutes)
-  else:
-    sMinutes = str(nMinutes)
-  return sHours + ":" + sMinutes
-
-window = vim.current.window
-b = vim.current.buffer
-cl, cc = window.cursor
-
-aRows = []
-for l in range(cl - 1, 0, -1):
-    if len(b[l]) > 0:
-        if b[l][0:3] == "==>":
-            aRows.append(b[l])
-
-b[cl - 1] = "===> " + fSumTotals(aRows)
-
-EOF
-endfunction
-
-
-
-" =============================================================================
-" Syntax
-
-au BufRead,BufNewFile *.txt hi header1 guifg=#FF7F50
-au BufRead,BufNewFile *.txt syn match header1 /\*\*\*.*$/
-
-au BufRead,BufNewFile *.txt hi header2 guifg=#B8860B
-au BufRead,BufNewFile *.txt syn match header2 /===.*$/
-
-au BufRead,BufNewFile *.txt hi header3 guifg=#8FBC8F
-au BufRead,BufNewFile *.txt syn match header3 /\-\-\-.*$/
-
 
