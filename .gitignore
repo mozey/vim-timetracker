@@ -82,3 +82,6 @@ Thumbs.db
 
 # Misc excluded from version control ...........................................
 _excluded
+export.json
+test.md
+

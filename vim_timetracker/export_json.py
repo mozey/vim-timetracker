@@ -119,6 +119,7 @@ def process_line(line, callback):
 
     if len(line) > 0:
         if line[:2] == "# ":
+            check_total()
             reset_state()
             state["date"] = line[2:]
 
