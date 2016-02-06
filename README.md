@@ -3,14 +3,6 @@
 Vim plugin written in python for flat-file todo list time sheets
 
 
-## Disclaimer
-
-It's likely that no-one besides myself will find this useful for time tracking, 
-just uploaded it to github for backup and in an attempt to document my workflow.
-
-Might be useful as an example of creating vim plugins with python.
-
-
 ## Installation
 
 Vim must be compiled with 
@@ -75,15 +67,13 @@ A couple of years ago I wrote __two vim plugins__ in python that helps me
 maintain the todo text files, this repos is a combination of these two plugins:
 
 
-### header.vim
+### timetracker.vim
 
 Make two different kinds of headers
 
     # First kind
     
     ## Second kind
-
-### timetracker.vim
 
 Insert current date
 
@@ -104,13 +94,18 @@ Sum time diffs for a block
 Sum time diffs for the entire day
 
     ==> 07:00
+    
+    
+### export_json.py 
+
+Export `todo.md` to json
 
 
 ## Example
 
-The content of `2016-01 todo.txt` might look like this
+The content of `2016-02 todo.md` might look like this
     
-    # 2016-02-02
+    # 2016-02-01
     
     ## My Project
     

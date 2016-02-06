@@ -165,5 +165,6 @@ def process_file():
 
 process_file()
 
-# json.dump(response, outfile, indent=2)
-print(json.dumps(response, indent=2))
+with open(destination, "w+") as f:
+    # print(json.dumps(response, indent=2))
+    json.dump(response, f, indent=2)
