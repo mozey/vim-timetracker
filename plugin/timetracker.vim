@@ -190,7 +190,7 @@ cl, cc = window.cursor
 rows_to_sum = []
 for l in range(cl - 1, 0, -1):
     if len(b[l]) > 0:
-        if b[l][0:4] == "#":
+        if b[l][0:2] == "# ":
             # header = b[l - 1]
             break
         else:
