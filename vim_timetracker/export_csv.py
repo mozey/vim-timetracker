@@ -1,51 +1,30 @@
 #!/usr/bin/env python
 
-# Export all todos to json
-
-# Maybe this should also be a callable from vim,
-# just a plain python script for now.
-
-"""
-
-Export file structure:
-
-{
-    "file_path": "/path/to/todo.md",
-    "time_slips": [
-        {
-            "project": "My project",
-            "date": "2016-02-05",
-            "tasks": ["There can be more than one task per time slip"],
-            "total": "03:35",
-            "seconds": "12300"
-        }
-    ],
-    "projects": {
-        "My Project": {
-            "total": "03:15",
-            "seconds": "12300"
-        }
-    }
-}
-
-"""
+# Export all todos to csv
 
 import sys
 import os
 import time
 import datetime
 from collections import OrderedDict
-import copy
-import json
+import csv
 
+"""
+Export file header:
+"""
+header = ["date", "project", "tasks", "seconds", "total"]
 
 if len(sys.argv) != 3:
     print("USAGE:")
-    print("    export_json.py SOURCE DESTINATION")
+    print("    export_csv.py SOURCE DESTINATION")
     exit()
 
 source = sys.argv[1]
 destination = sys.argv[2]
+
+if destination == source:
+    print("Destination and source must not be the same")
+    sys.exit(1)
 
 filter_project = None
 if len(sys.argv) == 4:
@@ -69,10 +48,7 @@ def str_to_sec(s):
 
 
 state = OrderedDict()
-response = OrderedDict()
-response["file_path"] = ""
-response["time_slips"] = []
-response["projects"] = {}
+response = [header]
 
 
 def reset_state():
@@ -141,20 +117,13 @@ def process_file():
         def flush():
             # Appends task to time_slips
             state["task_total"] = sec_to_str(state["task_seconds"])
-            response["time_slips"].append(copy.deepcopy(state))
-
-            if state["project"] not in response["projects"]:
-                # Create project
-                project = OrderedDict()
-                project["seconds"] = state["task_seconds"]
-                project["total"] = state["task_total"]
-                response["projects"][state["project"]] = project
-
-            else:
-                # Update project
-                project = response["projects"][state["project"]]
-                project["seconds"] += state["task_seconds"]
-                project["total"] = sec_to_str(project["seconds"])
+            response.append([
+                state["date"],
+                state["project"],
+                " | ".join(state["tasks"]),
+                state["task_seconds"],
+                state["task_total"]
+            ])
 
         lines = f.readlines()
         for line in lines:
@@ -166,6 +135,10 @@ def process_file():
 
 process_file()
 
-with open(destination, "w+") as f:
-    # print(json.dumps(response, indent=2))
-    json.dump(response, f, indent=2)
+# with open(destination, "w+") as f:
+#     # print(json.dumps(response, indent=2))
+#     json.dump(response, f, indent=2)
+
+with open(destination, "w", newline='') as fp:
+    writer = csv.writer(fp, delimiter=',')
+    writer.writerows(response)

@@ -27,12 +27,12 @@ def sum_totals(a_rows):
     if n_minutes >= 60:
         n_hours += int(math.floor((n_minutes / 60)))
         n_minutes %= 60
-        
+
     if n_hours < 10:
         s_hours = "0" + str(n_hours)
     else:
         s_hours = str(n_hours)
-        
+
     if n_minutes < 10:
         s_minutes = "0" + str(n_minutes)
     else:
@@ -190,7 +190,7 @@ cl, cc = window.cursor
 rows_to_sum = []
 for l in range(cl - 1, 0, -1):
     if len(b[l]) > 0:
-        if b[l][0:4] == "====":
+        if b[l][0:4] == "#":
             # header = b[l - 1]
             break
         else:
