@@ -82,7 +82,11 @@ def sum_task_total(line):
     state["task_seconds"] += diff
 
 
+skip_lines = False
+
+
 def process_line(line, callback):
+    global skip_lines
     line = line.replace("\n", "")
     line = line.lstrip()
 
@@ -94,6 +98,7 @@ def process_line(line, callback):
             state["task_total"] = ""
 
     if len(line) > 0:
+        # print(line)
         if line[:2] == "# ":
             check_total()
             reset_state()
@@ -107,9 +112,15 @@ def process_line(line, callback):
         elif line[:2] == "= ":
             check_total()
             state["tasks"].append(line[2:])
+            skip_lines = False
+
+        elif line[:3] == "== ":
+            # Skip tasks starting with "== "
+            skip_lines = True
 
         elif is_number(line[:2]):
-            sum_task_total(line)
+            if not skip_lines:
+                sum_task_total(line)
 
 
 def process_file():
