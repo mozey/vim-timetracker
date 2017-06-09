@@ -127,6 +127,8 @@ The content of `2016-02 todo.md` might look like this
 
     = Sub task of task 3
     
+    == Skip this task, don't export
+    
         10:15 - 11:10 -> 00:55
         12:00 - 13:00 -> 01:00
         => 01:55
