@@ -12,7 +12,8 @@ import csv
 """
 Export file header:
 """
-header = ["date", "project", "tasks", "seconds", "total"]
+header = ["date", "project", "tasks", "seconds", "total", "fixed_amount"]
+currency = ["$", "R"]
 
 if len(sys.argv) != 3:
     print("USAGE:")
@@ -57,6 +58,7 @@ def reset_state():
     state["tasks"] = []
     state["task_seconds"] = 0
     state["task_total"] = ""
+    state["fixed_amount"] = 0
 
 
 reset_state()
@@ -87,15 +89,21 @@ skip_lines = False
 
 def process_line(line, callback):
     global skip_lines
+    global currency
     line = line.replace("\n", "")
     line = line.lstrip()
 
     def check_total():
         if state["task_seconds"] != 0:
             callback()
-            state["tasks"] = []
-            state["task_seconds"] = 0
-            state["task_total"] = ""
+        elif state["fixed_amount"] != 0:
+            callback()
+        else:
+            return
+        state["tasks"] = []
+        state["task_seconds"] = 0
+        state["task_total"] = ""
+        state["fixed_amount"] = 0
 
     if len(line) > 0:
         # print(line)
@@ -118,6 +126,10 @@ def process_line(line, callback):
             # Skip tasks starting with "== "
             skip_lines = True
 
+        elif line[:1] in currency:
+            print("here")
+            state["fixed_amount"] = line
+
         elif is_number(line[:2]):
             if not skip_lines:
                 sum_task_total(line)
@@ -133,7 +145,8 @@ def process_file():
                 state["project"],
                 " | ".join(state["tasks"]),
                 state["task_seconds"],
-                state["task_total"]
+                state["task_total"],
+                state["fixed_amount"]
             ])
 
         lines = f.readlines()

@@ -120,6 +120,8 @@ The content of `2016-02 todo.md` might look like this
     
     = Task 2
     
+    == Skip this task, don't export
+    
         09:25 - 10:00 -> 00:35
         => 00:35
     
@@ -127,13 +129,15 @@ The content of `2016-02 todo.md` might look like this
 
     = Sub task of task 3
     
-    == Skip this task, don't export
-    
         10:15 - 11:10 -> 00:55
         12:00 - 13:00 -> 01:00
         => 01:55
     
     ## My Other Project
+    
+    = Fixed amount expense
+        
+        $123
     
     = Task 1
     
