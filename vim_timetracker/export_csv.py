@@ -81,6 +81,12 @@ def sum_task_total(line):
     d2 = datetime.datetime(1, 1, 1, int(t2[0]), int(t2[1]), 00)
     diff = int((d2 - d1).total_seconds())
 
+    # Task spans two days
+    if diff < 0:
+        d1 = datetime.datetime(1, 1, 1, int(t1[0]), int(t1[1]), 00)
+        d2 = datetime.datetime(1, 1, 2, int(t2[0]), int(t2[1]), 00)
+        diff = int((d2 - d1).total_seconds())
+
     state["task_seconds"] += diff
 
 
@@ -127,12 +133,16 @@ def process_line(line, callback):
             skip_lines = True
 
         elif line[:1] in currency:
-            print("here")
             state["fixed_amount"] = line
 
         elif is_number(line[:2]):
             if not skip_lines:
                 sum_task_total(line)
+
+        elif is_number(line[:1]):
+            # Hours is only one digit
+            raise Exception(
+                "Time slip rows must have format hh:mm => {}".format(line))
 
 
 def process_file():
