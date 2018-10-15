@@ -65,6 +65,38 @@ b[cl - 1] = line
 EOF
 endfunction
 
+function! Tt_h_next()
+python <<EOF
+
+"""
+Create next header,
+re-use header 2 from before with current date in header 1
+"""
+import vim
+import datetime
+
+window = vim.current.window
+b = vim.current.buffer
+cl, cc = window.cursor
+
+h2 = ""
+for l in range(cl, len(b), 1):
+    if len(b[l]) > 0:
+        if b[l][0:2] == "##":
+            h2 = b[l]
+            break
+
+h1 = "# " + datetime.datetime.now().isoformat()[0:10]
+
+# Append lines below current line
+# http://vimdoc.sourceforge.net/htmldoc/if_pyth.html#python-buffer
+b.append(h1, cl)
+b.append("", cl+1)
+b.append(h2, cl+2)
+
+EOF
+endfunction
+
 function! Tt_h_one()
 python <<EOF
 

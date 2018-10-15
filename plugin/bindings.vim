@@ -22,6 +22,10 @@ nmap <C-t>s :call Tt_sum()<CR>
 " All Days
 nmap <C-t>a :call Tt_all()<CR>
 
+" Header Next
+nmap <C-h>n :call Tt_h_next()<Esc>
+imap <C-h>n <C-o>:call Tt_h_next()<CR>
+
 " Header 1
 nmap <C-h>1 :call Tt_h_one()<Esc>
 imap <C-h>1 <C-o>:call Tt_h_one()<CR>
