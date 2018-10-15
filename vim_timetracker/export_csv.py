@@ -128,8 +128,8 @@ def process_line(line, callback):
             state["tasks"].append(line[2:])
             skip_lines = False
 
-        elif line[:3] == "== ":
-            # Skip tasks starting with "== "
+        elif line[:3] == "=x ":
+            # Skip tasks starting with "=x "
             skip_lines = True
 
         elif line[:1] in currency:
