@@ -54,6 +54,7 @@ def tt_row():
     from datetime import datetime
     import re
     import vim
+    import math
 
     def get_tab():
         # 4 spaces
@@ -76,8 +77,8 @@ def tt_row():
         t2 = get_date_time(a_time[1])
         d = t2 - t1
 
-        n_hours = d.seconds / (60 * 60)
-        n_minutes = (d.seconds % (60 * 60)) / 60
+        n_hours = math.trunc(d.seconds / (60 * 60))
+        n_minutes = math.trunc((d.seconds % (60 * 60)) / 60)
 
         if n_hours < 10:
             s_hours = "0" + str(n_hours)
