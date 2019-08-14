@@ -89,7 +89,7 @@ for l in range(cl, len(b), 1):
 h1 = "# " + datetime.datetime.now().isoformat()[0:10]
 
 # Append lines below current line
-# http://vimdoc.sourceforge.net/htmldoc/if_pyth.html#python3-buffer
+# http://vimdoc.sourceforge.net/htmldoc/if_pyth.html#python-buffer
 b.append(h1, cl)
 b.append("", cl+1)
 b.append(h2, cl+2)
