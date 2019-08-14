@@ -1,5 +1,5 @@
 function! Tt_block()
-python <<EOF
+python3 <<EOF
 
 import math
 import re
@@ -66,7 +66,7 @@ EOF
 endfunction
 
 function! Tt_h_next()
-python <<EOF
+python3 <<EOF
 
 """
 Create next header,
@@ -89,7 +89,7 @@ for l in range(cl, len(b), 1):
 h1 = "# " + datetime.datetime.now().isoformat()[0:10]
 
 # Append lines below current line
-# http://vimdoc.sourceforge.net/htmldoc/if_pyth.html#python-buffer
+# http://vimdoc.sourceforge.net/htmldoc/if_pyth.html#python3-buffer
 b.append(h1, cl)
 b.append("", cl+1)
 b.append(h2, cl+2)
@@ -98,7 +98,7 @@ EOF
 endfunction
 
 function! Tt_h_one()
-python <<EOF
+python3 <<EOF
 
 """
 Prepend current line with header 1
@@ -112,7 +112,7 @@ EOF
 endfunction
 
 function! Tt_h_two()
-python <<EOF
+python3 <<EOF
 
 """
 Prepend current line with header 2
@@ -126,7 +126,7 @@ EOF
 endfunction
 
 function! Tt_row()
-python <<EOF
+python3 <<EOF
 
 from datetime import datetime
 import re
@@ -178,7 +178,7 @@ EOF
 endfunction
 
 function! Tt_sum()
-python <<EOF
+python3 <<EOF
 
 import math
 import re
@@ -234,7 +234,7 @@ EOF
 endfunction
 
 function! Tt_time()
-python <<EOF
+python3 <<EOF
 
 from datetime import datetime
 import math
